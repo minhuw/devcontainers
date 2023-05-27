@@ -1,7 +1,7 @@
 {
     "name": "Kernel Compile Box",
     "build": {
-        "dockerfile": "Dockerfile"
+        "dockerfile": "Dockerfile.dev"
     },
     "customizations": {
         "vscode": {
