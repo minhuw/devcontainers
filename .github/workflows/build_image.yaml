@@ -49,4 +49,15 @@ jobs:
                 tags: ${{ steps.meta.outputs.tags }}
                 labels: ${{ steps.meta.outputs.labels }}
 
-         
+
+    test-kernel-image:
+        needs: ["build-and-push-image"]
+        runs-on: ubuntu-latest
+        # TODO: figure out how to retrieve the image tag from the previous job
+        container:
+            image: ghcr.io/${{ github.actor }}/kernel-ci:master
+        steps:
+            - name: Checkout repository
+              uses: actions/checkout@v3
+            - name: Download and build kernel
+              run: ./containers/kernel/test.sh
