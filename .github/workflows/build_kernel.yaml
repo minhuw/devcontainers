@@ -1,11 +1,14 @@
 name: Create and publish kernel images
 
 on:
+    workflow_dispatch:
+
     push:
         branches:
           - 'master'
         paths:
           - containers/kernel/**
+          - .github/workflows/build_kernel.yaml
 
 env:
     REGISTRY: ghcr.io
@@ -49,3 +52,6 @@ jobs:
                 push: true
                 tags: ${{ steps.meta.outputs.tags }}
                 labels: ${{ steps.meta.outputs.labels }}
+
+            - name: Analyze Docker image
+              run: docker run --rm -v /var/run/docker.sock:/var/run/docker.sock --env CI=true wagoodman/dive:latest ${{ steps.meta.outputs.tags }}
