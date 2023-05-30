@@ -6,5 +6,6 @@ RUN mkdir -m 0755 /nix && groupadd -r nixbld && chown root /nix && for n in $(se
 
 RUN bash -c "set -o pipefail && curl -L https://nixos.org/nix/install | bash"
 
-RUN echo "export PATH=\$PATH:\$HOME/.nix-profile/bin && source /nix/var/nix/profiles/default/etc/profile.d/nix.sh" > /etc/nix.source
+RUN mkdir /etc/nix && echo "experimental-features = nix-command flakes" >> /etc/nix/nix.conf
 
+RUN echo "export PATH=\$PATH:\$HOME/.nix-profile/bin && source /nix/var/nix/profiles/default/etc/profile.d/nix.sh" > /etc/nix.source
