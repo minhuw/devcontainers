@@ -22,6 +22,8 @@ jobs:
               include:
                 - dockerfile: ./containers/nix/Dockerfile
                   image: ghcr.io/${{ github.actor }}/nix
+                - dockerfile: ./containers/nix/Dockerfile.python
+                  image: ghcr.io/${{ github.actor }}/nix-python
         permissions:
             contents: read
             packages: write
