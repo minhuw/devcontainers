@@ -1,3 +1,3 @@
 FROM mcr.microsoft.com/devcontainers/base:ubuntu
 
-RUN export DEBIAN_FRONTEND=noninteractive && apt-get update && apt-get -y install bc bison build-essential cpio flex libelf-dev libssl-dev wget zstd && rm -rf /var/lib/apt/lists/*
+RUN export DEBIAN_FRONTEND=noninteractive && apt-get update && apt-get -y install bc bison build-essential cpio flex pahole libelf-dev libssl-dev liblzma-dev libncurses-dev libzstd-dev wget zstd && rm -rf /var/lib/apt/lists/*
