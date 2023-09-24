@@ -1,0 +1,6 @@
+{
+    "name": "Ubuntu Nix Addons",
+    "id": "ubuntu-nix",
+    "version": "1.0.0",
+    "description": "Nix package manager"
+}

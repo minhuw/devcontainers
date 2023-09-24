@@ -1,0 +1,6 @@
+{
+    "name": "Ubuntu Python Addons",
+    "id": "ubuntu-python",
+    "version": "1.0.0",
+    "description": "Prepare Python/Pip/Pdm"
+}
