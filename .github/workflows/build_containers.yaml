@@ -1,4 +1,4 @@
-name: Create and publish nix images
+name: Create and publish kernel images
 
 on:
     workflow_dispatch:
@@ -7,8 +7,8 @@ on:
         branches:
           - 'master'
         paths:
-          - containers/nix/**
-          - .github/workflows/build_nix.yaml
+          - containers/**
+          - .github/workflows/build_containers.yaml
 
 env:
     REGISTRY: ghcr.io
@@ -20,10 +20,21 @@ jobs:
             fail-fast: false
             matrix:
               include:
+                - dockerfile: ./containers/kernel/Dockerfile.ci
+                  image: ghcr.io/${{ github.actor }}/kernel-ci
+                  validate_image: true
                 - dockerfile: ./containers/nix/Dockerfile
                   image: ghcr.io/${{ github.actor }}/nix
+                  validate_image: true
                 - dockerfile: ./containers/nix/Dockerfile.python
                   image: ghcr.io/${{ github.actor }}/nix-python
+                  validate_image: true
+                - dockerfile: ./containers/python/Dockerfile
+                  image: ghcr.io/${{ github.actor }}/python
+                  validate_image: true
+                - dockerfile: ./containers/caddy/Dockerfile
+                  image: ghcr.io/${{ github.actor }}/caddy
+                  validate_image: false
         permissions:
             contents: read
             packages: write
@@ -43,7 +54,7 @@ jobs:
               uses: docker/metadata-action@9ec57ed1fcdbf14dcef7dfbe97b2010124a938b7
               with:
                   images: ${{ matrix.image }}
-
+            
             - name: Build and push Docker image
               uses: docker/build-push-action@f2a1d5e99d037542a71f64918e516c093c6f3fc4
               with:
@@ -55,3 +66,4 @@ jobs:
 
             - name: Analyze Docker image
               run: docker run --rm -v /var/run/docker.sock:/var/run/docker.sock --env CI=true wagoodman/dive:latest ${{ steps.meta.outputs.tags }}
+              if: ${{ matrix.validate_image }}
