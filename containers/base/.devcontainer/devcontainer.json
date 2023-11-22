@@ -1,0 +1,9 @@
+{
+    "name": "Base Dev Box",
+    "image": "mcr.microsoft.com/devcontainers/base:ubuntu",
+    "customizations": {
+        "vscode": {
+            "extensions": []
+        }
+    }
+}

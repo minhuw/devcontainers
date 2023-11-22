@@ -1,0 +1,44 @@
+name: Create and publish kernel dev images
+on:
+    workflow_dispatch:
+
+    push:
+        branches:
+          - 'master'
+        paths:
+          - containers
+          - .github/workflows/build_devcontainers.yaml
+
+env:
+    REGISTRY: ghcr.io
+
+jobs:
+    build-and-push-image:
+        runs-on: ubuntu-latest
+        strategy:
+            fail-fast: false
+            matrix:
+              include:
+                - name: base
+                - name: kernel
+        permissions:
+            contents: read
+            packages: write
+        steps:
+          - name: Checkout repository
+            uses: actions/checkout@v3
+
+          - name: Log in to the Container registry
+            uses: docker/login-action@65b78e6e13532edd9afa3aa52ac7964289d1a9c1
+            with:
+                registry: ${{ env.REGISTRY }}
+                username: ${{ github.actor }}
+                password: ${{ secrets.GITHUB_TOKEN }}
+
+          - name: pre-build devcontainer
+            uses: devcontainers/ci@v0.3
+            with:
+              imageName: ghcr.io/${{ github.actor }}/${{ matrix.name }}-dev
+              cacheFrom: ghcr.io/${{ github.actor }}/${{ matrix.name }}-dev
+              subFolder: containers/${{ matrix.name }}
+              push: always
