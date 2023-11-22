@@ -1,9 +1,12 @@
 name: "Release dev container features"
 on:
-  workflow_dispatch:
-  push:
-    branches:
-      - master
+    workflow_dispatch:
+    push:
+        branches:
+          - 'master'
+        paths:
+          - features/**
+          - .github/workflows/publish_feature.yaml
 
 jobs:
   deploy:

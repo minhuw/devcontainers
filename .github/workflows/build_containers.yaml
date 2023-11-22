@@ -1,8 +1,6 @@
-name: Create and publish kernel images
-
+name: "Release Container"
 on:
     workflow_dispatch:
-
     push:
         branches:
           - 'master'

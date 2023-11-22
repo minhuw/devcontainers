@@ -1,12 +1,11 @@
-name: Create and publish kernel dev images
+name: "Release Dev Container"
 on:
     workflow_dispatch:
-
     push:
         branches:
           - 'master'
         paths:
-          - containers
+          - containers/**
           - .github/workflows/build_devcontainers.yaml
 
 env:
