@@ -1,0 +1,6 @@
+{
+    "name": "Ubuntu Devenv Addons",
+    "id": "ubuntu-devenv",
+    "version": "1.0.0",
+    "description": "Cachix devenv"
+}
