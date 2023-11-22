@@ -23,6 +23,7 @@ jobs:
                 - name: base
                 - name: kernel
                 - name: python
+                - name: ubuntu-kernel
         permissions:
             contents: read
             packages: write
