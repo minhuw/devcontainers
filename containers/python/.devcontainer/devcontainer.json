@@ -1,0 +1,13 @@
+{
+    "name": "Base Dev Box",
+    "image": "ghcr.io/minhuw/base-dev:latest",
+    "customizations": {
+        "vscode": {
+            "extensions": [
+                "charliermarsh.ruff",
+                "ms-python.python",
+                "ms-python.black-formatter"
+            ]
+        }
+    }
+}

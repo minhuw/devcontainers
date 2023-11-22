@@ -3,7 +3,15 @@
     "image": "mcr.microsoft.com/devcontainers/base:ubuntu",
     "customizations": {
         "vscode": {
-            "extensions": []
+            "extensions": [
+                "eamodio.gitlens",
+                "usernamehw.errorlens",
+                "GitHub.copilot",
+                "nhoizey.gremlins",
+                "christian-kohler.path-intellisense",
+                "mutantdino.resourcemonitor",
+                "timonwong.shellcheck"
+            ]
         }
     }
 }
