@@ -4,3 +4,8 @@ export DEBIAN_FRONTEND=noninteractive && sudo apt-get update && sudo apt-get ins
 
 curl --proto '=https' --tlsv1.2 -sSf -L https://install.determinate.systems/nix | sh -s -- install linux --extra-conf "sandbox = true" --init none --no-confirm 
 
+sudo -i nix-env -iA cachix -f https://cachix.org/api/v1/install
+
+sudo -i cachix use devenv
+
+sudo -i nix-env -if https://install.devenv.sh/python-rewrite
