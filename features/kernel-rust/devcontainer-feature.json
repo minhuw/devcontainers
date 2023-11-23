@@ -1,0 +1,6 @@
+{
+    "name": "Kernel Rust Modules Addons",
+    "id": "kernel-rust",
+    "version": "1.0.0",
+    "description": "Packages required to compile Rust Modules for kernel"
+}
