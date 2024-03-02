@@ -1,6 +1,6 @@
 {
     "name": "Ubuntu Kernel Compilation Addons",
     "id": "ubuntu-kernel",
-    "version": "1.0.3",
+    "version": "1.0.4",
     "description": "Packages required to compile Ubuntu kernel source"
 }
