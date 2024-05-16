@@ -1,0 +1,6 @@
+{
+    "name": "Dotfiles Addons",
+    "id": "dotfiles",
+    "version": "1.0.0",
+    "description": "Packages installing dotfiles"
+}
