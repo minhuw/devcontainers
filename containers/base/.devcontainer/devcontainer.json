@@ -1,6 +1,9 @@
 {
     "name": "Base Dev Box",
     "image": "mcr.microsoft.com/devcontainers/base:ubuntu",
+    "features": {
+        "ghcr.io/rio/features/chezmoi:1": {}
+    },
     "customizations": {
         "vscode": {
             "extensions": [
