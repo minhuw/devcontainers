@@ -1,11 +1,9 @@
 #!/usr/bin/env bash
 
-curl https://raw.githubusercontent.com/gregkh/linux/linux-6.6.y/scripts/min-tool-version.sh -O /tmp/scripts/min-tool-version.sh && chmod +x /tmp/scripts/min-tool-version.sh
+curl https://raw.githubusercontent.com/torvalds/linux/v6.11/scripts/min-tool-version.sh -O /tmp/scripts/min-tool-version.sh && chmod +x /tmp/scripts/min-tool-version.sh
 
-rustup override set "$(/tmp/scripts/min-tool-version.sh rustc)"
+rustup default set "$(/tmp/scripts/min-tool-version.sh rustc)"
 
-rustup component add rust-src
+rustup component add rust-src rustfmt clippy 
 
-cargo install --locked --version "$(/tmp/scripts/min-tool-version.sh rustc)" bindgen-cli
-
-rustup component add rustfmt clippy 
+cargo install --locked --version "$(/tmp/scripts/min-tool-version.sh bindgen)" bindgen-cli
