@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-rustup default set "1.78.0"
+rustup default "1.78.0"
 
 rustup component add rust-src rustfmt clippy 
 
