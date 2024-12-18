@@ -1,7 +1,7 @@
 {
     "name": "Kernel Rust Modules Addons",
     "id": "kernel-rust",
-    "version": "1.0.1",
+    "version": "1.0.2",
     "description": "Packages required to compile Rust Modules for kernel",
     "installsAfter": [
         "ghcr.io/devcontainers/features/rust"
