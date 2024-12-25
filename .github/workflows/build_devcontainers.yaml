@@ -22,6 +22,7 @@ jobs:
                 - name: base
                 - name: kernel
                 - name: python
+                - name: omnetpp
 
         permissions:
             contents: read

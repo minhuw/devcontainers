@@ -1,0 +1,25 @@
+{
+    "name": "OMNET++ Dev Box",
+    "build": {
+        "dockerfile": "Dockerfile"
+    },
+    "features": {
+        "ghcr.io/minhuw/devcontainers/ubuntu-nix:latest": {}
+    },
+    "remoteEnv": {
+        "PATH": "${containerEnv:PATH}:/opt/omnetpp/bin",
+        "LD_LIBRARY_PATH": "${containerEnv:LD_LIBRARY_PATH}:/opt/omnetpp/lib"
+    },
+    "customizations": {
+        "vscode": {
+            "settings": {
+                "clangd.arguments": [
+                    "-header-insertion=never"
+                ]
+            },
+            "extensions": [
+                "llvm-vs-code-extensions.vscode-clangd"
+            ]
+        }
+    }
+}
