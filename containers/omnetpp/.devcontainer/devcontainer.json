@@ -8,7 +8,8 @@
     },
     "remoteEnv": {
         "PATH": "${containerEnv:PATH}:/opt/omnetpp/bin",
-        "LD_LIBRARY_PATH": "${containerEnv:LD_LIBRARY_PATH}:/opt/omnetpp/lib"
+        "LD_LIBRARY_PATH": "${containerEnv:LD_LIBRARY_PATH}:/opt/omnetpp/lib",
+        "OMNETPP_ROOT": "/opt/omnetpp"
     },
     "customizations": {
         "vscode": {
