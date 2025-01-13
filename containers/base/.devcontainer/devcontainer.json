@@ -13,7 +13,8 @@
                 "nhoizey.gremlins",
                 "christian-kohler.path-intellisense",
                 "mutantdino.resourcemonitor",
-                "timonwong.shellcheck"
+                "timonwong.shellcheck",
+                "ms-toolsai.datawrangler"
             ]
         }
     }
