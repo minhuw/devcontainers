@@ -2,8 +2,10 @@
     "name": "Base Dev Box",
     "image": "mcr.microsoft.com/devcontainers/base:ubuntu-24.04",
     "features": {
-        "ghcr.io/rio/features/chezmoi:1": {}
+        "ghcr.io/rio/features/chezmoi:1": {},
+        "ghcr.io/minhuw/devcontainers/ubuntu-nix:latest": {}
     },
+    "postCreateCommand": "sudo $(which nix) profile install nixpkgs#fish nixpkgs#starship && chezmoi init --apply minhuw",
     "customizations": {
         "vscode": {
             "extensions": [
@@ -13,8 +15,7 @@
                 "nhoizey.gremlins",
                 "christian-kohler.path-intellisense",
                 "mutantdino.resourcemonitor",
-                "timonwong.shellcheck",
-                "ms-toolsai.datawrangler"
+                "timonwong.shellcheck"
             ]
         }
     }
