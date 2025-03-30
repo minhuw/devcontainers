@@ -18,9 +18,6 @@ jobs:
             fail-fast: false
             matrix:
               include:
-                - dockerfile: ./containers/kernel/Dockerfile.ci
-                  image: ghcr.io/${{ github.actor }}/kernel-ci
-                  validate_image: true
                 - dockerfile: ./containers/nix/Dockerfile
                   image: ghcr.io/${{ github.actor }}/nix
                   validate_image: true

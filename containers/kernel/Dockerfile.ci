@@ -1,3 +1,0 @@
-FROM ubuntu:22.04
-
-RUN export DEBIAN_FRONTEND=noninteractive && apt-get update && apt-get -y install git python3 bc bison build-essential cpio flex pahole libelf-dev libssl-dev liblzma-dev libncurses-dev libzstd-dev wget zstd && rm -rf /var/lib/apt/lists/*
