@@ -25,7 +25,8 @@
                     "editor.rulers": [80,100]
                 },
                 "clangd.arguments": [
-                    "-header-insertion=never"
+                    "-header-insertion=never",
+                    "--config={\"diagnostics\":{\"suppress\":[\"bugprone-sizeof-expression\"]}}"
                 ]
             },
             "extensions": [
