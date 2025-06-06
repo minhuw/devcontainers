@@ -23,6 +23,7 @@ jobs:
                 - name: kernel
                 - name: python
                 - name: omnetpp
+                - name: ubuntu-kernel
 
         permissions:
             contents: read
