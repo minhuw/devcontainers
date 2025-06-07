@@ -1,7 +1,7 @@
 {
     "name": "Ubuntu Nix Addons",
     "id": "ubuntu-nix",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "description": "Nix package manager",
     "customizations": {
         "vscode": {
