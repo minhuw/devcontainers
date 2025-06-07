@@ -4,8 +4,6 @@
         "dockerfile": "Dockerfile"
     },
     "features": {
-        "ghcr.io/rio/features/chezmoi:1": {},
-        "ghcr.io/minhuw/devcontainers/ubuntu-nix:latest": {},
         "ghcr.io/devcontainers/features/rust:1": {}
     },
     "customizations": {
