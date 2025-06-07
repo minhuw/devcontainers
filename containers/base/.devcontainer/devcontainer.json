@@ -5,7 +5,7 @@
         "ghcr.io/rio/features/chezmoi:1": {},
         "ghcr.io/minhuw/devcontainers/ubuntu-nix:latest": {}
     },
-    "postCreateCommand": "sudo -E bash -c \"$(which nix) profile install nixpkgs#fish nixpkgs#starship\" && chezmoi init --apply minhuw",
+    "postCreateCommand": "sudo -E bash -c \"$(which nix) profile install nixpkgs#fish nixpkgs#starship nixpkgs#atuin\" && chezmoi init --apply minhuw",
     "customizations": {
         "vscode": {
             "extensions": [
