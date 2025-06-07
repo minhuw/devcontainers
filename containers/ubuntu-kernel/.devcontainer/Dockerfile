@@ -46,9 +46,14 @@ RUN export DEBIAN_FRONTEND=noninteractive && sudo apt-get update && sudo apt-get
     systemtap-sdt-dev \
     wget \
     zstd \
+    rustc \
+    rust-src \
+    bindgen-0.65 \
+    rustfmt \
+    rust-clippy \
     && sudo add-apt-repository ppa:ubuntu-toolchain-r/test -y \
     && sudo apt-get update \
     && sudo apt-get -y install \
-    g++-13 \
-    gcc-13 \
+    g++-14 \
+    gcc-14 \
     && sudo rm -rf /var/lib/apt/lists/*
