@@ -4,7 +4,6 @@ RUN export DEBIAN_FRONTEND=noninteractive && sudo apt-get update && sudo apt-get
     asciidoc \
     bc \
     bear \
-    bindgen-0.65 \
     bison \
     build-essential \
     clang \
@@ -43,8 +42,6 @@ RUN export DEBIAN_FRONTEND=noninteractive && sudo apt-get update && sudo apt-get
     python3-dev \
     python3-docutils \
     python3-setuptools \
-    rustc \
-    rust-src \
     software-properties-common \
     systemtap-sdt-dev \
     wget \
