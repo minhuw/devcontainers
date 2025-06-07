@@ -5,6 +5,9 @@
         "ghcr.io/minhuw/devcontainers/ubuntu-nix:1.0.1": {}
     },
     "postCreateCommand": "sudo -E bash -c \"/nix/var/nix/profiles/default/bin/nix profile install nixpkgs#fish nixpkgs#starship nixpkgs#atuin nixpkgs#chezmoi\" && chezmoi init --apply minhuw",
+    "remoteEnv": {
+        "PATH": "/nix/var/nix/profiles/default/bin:${containerEnv:PATH}"
+    },
     "customizations": {
         "vscode": {
             "extensions": [
