@@ -16,9 +16,11 @@ RUN export DEBIAN_FRONTEND=noninteractive && sudo apt-get update && sudo apt-get
     flex \
     gawk \
     git \
+    binutils-dev \
     libbabeltrace-ctf-dev \
     libcap-dev \
     libclang-dev \
+    libcapstone-dev \
     libdw-dev \
     libelf-dev \
     libiberty-dev \
