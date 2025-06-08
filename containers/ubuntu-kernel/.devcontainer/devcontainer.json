@@ -6,6 +6,7 @@
     "features": {
         "ghcr.io/devcontainers/features/rust:1": {}
     },
+    "postCreateCommand": "rustup component add rust-src rustfmt clippy && cargo install --locked bindgen-cli",
     "customizations": {
         "vscode": {
             "settings": {
