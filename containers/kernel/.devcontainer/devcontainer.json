@@ -25,7 +25,7 @@
                 },
                 "clangd.arguments": [
                     "-header-insertion=never",
-                    "--config={\"diagnostics\":{\"suppress\":[\"bugprone-sizeof-expression\", \"unused-includes\"]}}"
+                    "--log={\"diagnostics\":{\"suppress\":[\"bugprone-sizeof-expression\", \"unused-includes\"]}}\"
                 ]
             },
             "extensions": [
