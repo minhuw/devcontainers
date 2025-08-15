@@ -50,10 +50,6 @@ RUN export DEBIAN_FRONTEND=noninteractive && sudo apt-get update && sudo apt-get
     systemtap-sdt-dev \
     wget \
     zstd \
-    rustc-1.80 \
-    rust-1.80-src \
-    rustfmt-1.80 \
-    bindgen-0.65 \
     && sudo add-apt-repository ppa:ubuntu-toolchain-r/test -y \
     && sudo apt-get update \
     && sudo apt-get -y install \
