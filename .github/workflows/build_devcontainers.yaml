@@ -62,7 +62,26 @@ jobs:
                     fi
                 fi
 
-                # Build JSON matrix
+                # Build JSON matrix with base container first
+                SORTED_CONTAINERS=""
+                BASE_CONTAINER=""
+                OTHER_CONTAINERS=""
+
+                while IFS= read -r container_name; do
+                    [[ -z "$container_name" ]] && continue
+                    if [ "$container_name" = "base" ]; then
+                        BASE_CONTAINER="$container_name"
+                    else
+                        OTHER_CONTAINERS+="$container_name"$'\n'
+                    fi
+                done <<< "$CONTAINERS"
+
+                # Put base first, then others
+                if [ -n "$BASE_CONTAINER" ]; then
+                    SORTED_CONTAINERS="$BASE_CONTAINER"$'\n'
+                fi
+                SORTED_CONTAINERS+="$OTHER_CONTAINERS"
+
                 MATRIX="["
                 FIRST=true
                 while IFS= read -r container_name; do
@@ -73,11 +92,11 @@ jobs:
                         MATRIX+=","
                     fi
                     MATRIX+="{\"name\":\"$container_name\"}"
-                done <<< "$CONTAINERS"
+                done <<< "$SORTED_CONTAINERS"
                 MATRIX+="]"
 
                 echo "matrix=$MATRIX" >> $GITHUB_OUTPUT
-                echo "Building: $(echo "$CONTAINERS" | tr '\n' ' ')"
+                echo "Building (base first): $(echo "$SORTED_CONTAINERS" | tr '\n' ' ')"
 
     build-and-push-image:
         needs: detect-changes
