@@ -1,0 +1,41 @@
+{
+    "name": "Web Development",
+    "image": "ghcr.io/minhuw/base-dev:latest",
+    "postCreateCommand": "npm install -g create-next-app@latest typescript @types/node @types/react @types/react-dom tailwindcss postcss autoprefixer eslint prettier",
+    "customizations": {
+        "vscode": {
+            "extensions": [
+                "bradlc.vscode-tailwindcss"
+            ],
+            "settings": {
+                "tailwindCSS.includeLanguages": {
+                    "javascript": "javascript",
+                    "html": "HTML"
+                },
+                "files.associations": {
+                    "*.css": "tailwindcss"
+                }
+            }
+        }
+    },
+    "forwardPorts": [3000, 3001, 5173, 8080],
+    "portsAttributes": {
+        "3000": {
+            "label": "Next.js Dev Server",
+            "onAutoForward": "notify"
+        },
+        "3001": {
+            "label": "Alternative Dev Server",
+            "onAutoForward": "notify"
+        },
+        "5173": {
+            "label": "Vite Dev Server",
+            "onAutoForward": "notify"
+        },
+        "8080": {
+            "label": "Webpack Dev Server",
+            "onAutoForward": "notify"
+        }
+    },
+    "remoteUser": "node"
+}

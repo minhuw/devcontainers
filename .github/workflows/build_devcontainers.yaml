@@ -24,6 +24,7 @@ jobs:
                 - name: python
                 - name: omnetpp
                 - name: ubuntu-kernel
+                - name: web
 
         permissions:
             contents: read

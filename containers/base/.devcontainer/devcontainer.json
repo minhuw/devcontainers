@@ -3,9 +3,11 @@
     "image": "mcr.microsoft.com/devcontainers/base:ubuntu-24.04",
     "features": {
         "ghcr.io/minhuw/devcontainers/ubuntu-nix:1.0.1": {},
-        "ghcr.io/devcontainers/features/node:1": {}
+        "ghcr.io/devcontainers/features/node:1": {},
+        "ghcr.io/devcontainers/features/git:1": {},
+        "ghcr.io/devcontainers/features/github-cli:1": {}
     },
-    "postCreateCommand": "sudo -E bash -c \"/nix/var/nix/profiles/default/bin/nix profile install nixpkgs#fish nixpkgs#starship nixpkgs#atuin nixpkgs#chezmoi\" && chezmoi init --apply minhuw",
+    "postCreateCommand": "sudo -E bash -c \"/nix/var/nix/profiles/default/bin/nix profile install nixpkgs#fish nixpkgs#starship nixpkgs#atuin nixpkgs#chezmoi\" && chezmoi init --apply minhuw && npm install -g @anthropic-ai/claude-cli",
     "remoteEnv": {
         "PATH": "/nix/var/nix/profiles/default/bin:${containerEnv:PATH}"
     },
