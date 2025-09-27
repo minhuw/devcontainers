@@ -9,8 +9,48 @@ on:
           - .github/workflows/publish_feature.yaml
 
 jobs:
+  check-changes:
+    runs-on: ubuntu-latest
+    outputs:
+      has_changes: ${{ steps.changes.outputs.has_changes }}
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Check for feature changes
+        id: changes
+        run: |
+          if [ "${{ github.event_name }}" = "push" ]; then
+            # Check if we have valid git refs
+            if [ -z "${{ github.event.before }}" ] || ! git cat-file -e "${{ github.event.before }}" 2>/dev/null; then
+              echo "has_changes=true" >> $GITHUB_OUTPUT
+              echo "Invalid or missing before ref, publishing all features"
+            else
+              CHANGED_FILES=$(git diff --name-only "${{ github.event.before }}" "${{ github.sha }}")
+              NEW_FEATURES=$(git diff --name-only --diff-filter=A "${{ github.event.before }}" "${{ github.sha }}" | grep "^features/.*/devcontainer-feature.json" || true)
+
+              if (echo "$CHANGED_FILES" | grep -q "^features/") || [ -n "$NEW_FEATURES" ]; then
+                echo "has_changes=true" >> $GITHUB_OUTPUT
+                if [ -n "$NEW_FEATURES" ]; then
+                  echo "New features detected: $(echo "$NEW_FEATURES" | cut -d'/' -f2 | tr '\n' ' ')"
+                else
+                  echo "Existing features changed, will publish"
+                fi
+              else
+                echo "has_changes=false" >> $GITHUB_OUTPUT
+                echo "No feature changes detected"
+              fi
+            fi
+          else
+            # Manual dispatch: always publish
+            echo "has_changes=true" >> $GITHUB_OUTPUT
+            echo "Manual dispatch: publishing all features"
+          fi
+
   deploy:
-    if: ${{ github.ref == 'refs/heads/master' }}
+    needs: check-changes
+    if: ${{ github.ref == 'refs/heads/master' && needs.check-changes.outputs.has_changes == 'true' }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3

@@ -12,24 +12,98 @@ env:
     REGISTRY: ghcr.io
 
 jobs:
-    build-and-push-image:
+    detect-changes:
         runs-on: ubuntu-latest
+        outputs:
+            matrix: ${{ steps.changes.outputs.matrix }}
+        steps:
+          - name: Checkout repository
+            uses: actions/checkout@v3
+            with:
+                fetch-depth: 0
+
+          - name: Detect changed containers
+            id: changes
+            run: |
+                # Build container list
+                ALL_CONTAINERS=""
+                while IFS= read -r dockerfile; do
+                    container_path=$(dirname "$dockerfile")
+                    container_name=$(basename "$container_path")
+
+                    # Skip .devcontainer Dockerfiles
+                    [[ "$dockerfile" == *"/.devcontainer/"* ]] && continue
+
+                    # Generate image name and validation setting
+                    image_name="ghcr.io/${{ github.actor }}/${container_name}"
+                    validate="true"
+                    [[ "$container_name" == "caddy" ]] && validate="false"
+
+                    ALL_CONTAINERS+="$container_path:$dockerfile:$image_name:$validate"$'\n'
+                done < <(find containers -name "Dockerfile" -type f)
+
+                # Get changed paths
+                if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+                    BUILD_LIST="$ALL_CONTAINERS"
+                    echo "Manual dispatch: building all containers"
+                else
+                    # Check if we have valid git refs
+                    if [ -z "${{ github.event.before }}" ] || ! git cat-file -e "${{ github.event.before }}" 2>/dev/null; then
+                        echo "Invalid or missing before ref, building all containers"
+                        BUILD_LIST="$ALL_CONTAINERS"
+                    else
+                        CHANGED_FILES=$(git diff --name-only "${{ github.event.before }}" "${{ github.sha }}")
+                        NEW_DOCKERFILES=$(git diff --name-only --diff-filter=A "${{ github.event.before }}" "${{ github.sha }}" | grep "containers/.*/Dockerfile$" || true)
+
+                        CHANGED_PATHS=$(echo "$CHANGED_FILES" | grep "^containers/" | cut -d'/' -f1-2 | sort -u || true)
+                        NEW_PATHS=$(echo "$NEW_DOCKERFILES" | xargs -I {} dirname {} | sort -u 2>/dev/null || true)
+
+                        ALL_CHANGED_PATHS=$(echo -e "$CHANGED_PATHS\n$NEW_PATHS" | sort -u | grep -v '^$' || true)
+
+                        # Filter builds to only changed containers
+                        BUILD_LIST=""
+                        for path in $ALL_CHANGED_PATHS; do
+                            BUILD_LIST+=$(echo "$ALL_CONTAINERS" | grep "^$path:" || true)
+                            BUILD_LIST+=$'\n'
+                        done
+
+                        if [ -n "$NEW_DOCKERFILES" ]; then
+                            echo "New Dockerfiles detected: $NEW_DOCKERFILES"
+                        fi
+
+                        # If no changes detected, build all
+                        if [ -z "$BUILD_LIST" ] || [ "$BUILD_LIST" = $'\n' ]; then
+                            echo "No valid changes detected, building all containers"
+                            BUILD_LIST="$ALL_CONTAINERS"
+                        fi
+                    fi
+                fi
+
+                # Build JSON matrix
+                MATRIX="["
+                FIRST=true
+                while IFS=':' read -r container_path dockerfile image validate; do
+                    [[ -z "$container_path" ]] && continue
+                    if [ "$FIRST" = "true" ]; then
+                        FIRST=false
+                    else
+                        MATRIX+=","
+                    fi
+                    MATRIX+="{\"dockerfile\":\"$dockerfile\",\"image\":\"$image\",\"validate_image\":$validate}"
+                done <<< "$BUILD_LIST"
+                MATRIX+="]"
+
+                echo "matrix=$MATRIX" >> $GITHUB_OUTPUT
+                echo "Building: $(echo "$BUILD_LIST" | cut -d':' -f1 | tr '\n' ' ')"
+
+    build-and-push-image:
+        needs: detect-changes
+        runs-on: ubuntu-latest
+        if: needs.detect-changes.outputs.matrix != '[]'
         strategy:
             fail-fast: false
             matrix:
-              include:
-                - dockerfile: ./containers/nix/Dockerfile
-                  image: ghcr.io/${{ github.actor }}/nix
-                  validate_image: true
-                - dockerfile: ./containers/nix/Dockerfile.python
-                  image: ghcr.io/${{ github.actor }}/nix-python
-                  validate_image: true
-                - dockerfile: ./containers/python/Dockerfile
-                  image: ghcr.io/${{ github.actor }}/python
-                  validate_image: true
-                - dockerfile: ./containers/caddy/Dockerfile
-                  image: ghcr.io/${{ github.actor }}/caddy
-                  validate_image: false
+              include: ${{ fromJson(needs.detect-changes.outputs.matrix) }}
         permissions:
             contents: read
             packages: write

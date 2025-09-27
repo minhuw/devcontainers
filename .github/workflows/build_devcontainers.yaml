@@ -25,35 +25,59 @@ jobs:
           - name: Detect changed containers
             id: changes
             run: |
-                # Get list of changed files
-                if [ "${{ github.event_name }}" = "push" ]; then
-                    CHANGED_FILES=$(git diff --name-only ${{ github.event.before }} ${{ github.sha }})
+                # Get all available containers
+                ALL_CONTAINERS=""
+                while IFS= read -r container_dir; do
+                    container_name=$(echo "$container_dir" | cut -d'/' -f2)
+                    ALL_CONTAINERS+="$container_name"$'\n'
+                done < <(find containers -name .devcontainer -type d)
+
+                if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+                    # Manual: build all
+                    CONTAINERS="$ALL_CONTAINERS"
+                    echo "Manual dispatch: building all containers"
                 else
-                    # For workflow_dispatch, build all containers
-                    CHANGED_FILES="containers/"
+                    # Push: detect changes and new containers
+                    # Check if we have valid git refs
+                    if [ -z "${{ github.event.before }}" ] || ! git cat-file -e "${{ github.event.before }}" 2>/dev/null; then
+                        echo "Invalid or missing before ref, building all containers"
+                        CONTAINERS="$ALL_CONTAINERS"
+                    else
+                        CHANGED_FILES=$(git diff --name-only "${{ github.event.before }}" "${{ github.sha }}")
+                        CHANGED_CONTAINERS=$(echo "$CHANGED_FILES" | grep "^containers/" | cut -d'/' -f2 | sort -u || true)
+
+                        # Also detect new containers (added .devcontainer directories)
+                        NEW_CONTAINERS=$(git diff --name-only --diff-filter=A "${{ github.event.before }}" "${{ github.sha }}" | grep "containers/.*/\.devcontainer/devcontainer\.json" | cut -d'/' -f2 || true)
+
+                        # Combine changed and new containers
+                        CONTAINERS=$(echo -e "$CHANGED_CONTAINERS\n$NEW_CONTAINERS" | sort -u | grep -v '^$' || true)
+
+                        # If no containers detected or base changed, build all containers
+                        if [ -z "$CONTAINERS" ] || (echo "$CONTAINERS" | grep -q "^base$"); then
+                            echo "Base container changed or no valid changes detected: building all containers"
+                            CONTAINERS="$ALL_CONTAINERS"
+                        elif [ -n "$NEW_CONTAINERS" ]; then
+                            echo "New containers detected: $NEW_CONTAINERS"
+                        fi
+                    fi
                 fi
 
-                # Extract container names from changed paths
-                CHANGED_CONTAINERS=$(echo "$CHANGED_FILES" | grep "^containers/" | cut -d'/' -f2 | sort -u)
-
-                # Build matrix JSON
-                MATRIX_JSON="["
+                # Build JSON matrix
+                MATRIX="["
                 FIRST=true
-                for container in $CHANGED_CONTAINERS; do
-                    if [ -d "containers/$container/.devcontainer" ]; then
-                        if [ "$FIRST" = "true" ]; then
-                            FIRST=false
-                        else
-                            MATRIX_JSON="$MATRIX_JSON,"
-                        fi
-                        MATRIX_JSON="$MATRIX_JSON{\"name\":\"$container\"}"
+                while IFS= read -r container_name; do
+                    [[ -z "$container_name" ]] && continue
+                    if [ "$FIRST" = "true" ]; then
+                        FIRST=false
+                    else
+                        MATRIX+=","
                     fi
-                done
-                MATRIX_JSON="$MATRIX_JSON]"
+                    MATRIX+="{\"name\":\"$container_name\"}"
+                done <<< "$CONTAINERS"
+                MATRIX+="]"
 
-                echo "matrix=$MATRIX_JSON" >> $GITHUB_OUTPUT
-                echo "Changed containers: $CHANGED_CONTAINERS"
-                echo "Matrix: $MATRIX_JSON"
+                echo "matrix=$MATRIX" >> $GITHUB_OUTPUT
+                echo "Building: $(echo "$CONTAINERS" | tr '\n' ' ')"
 
     build-and-push-image:
         needs: detect-changes
