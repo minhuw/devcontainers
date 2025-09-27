@@ -7,7 +7,7 @@
         "ghcr.io/devcontainers/features/git:1": {},
         "ghcr.io/devcontainers/features/github-cli:1": {}
     },
-    "postCreateCommand": "sudo -E bash -c \"/nix/var/nix/profiles/default/bin/nix profile install nixpkgs#fish nixpkgs#starship nixpkgs#atuin nixpkgs#chezmoi\" && chezmoi init --apply minhuw && npm install -g @anthropic-ai/claude-cli",
+    "postCreateCommand": "sudo -E bash -c \"/nix/var/nix/profiles/default/bin/nix profile install nixpkgs#fish nixpkgs#starship nixpkgs#atuin nixpkgs#chezmoi\" && chezmoi init --apply minhuw && npm install -g @anthropic-ai/claude-code",
     "remoteEnv": {
         "PATH": "/nix/var/nix/profiles/default/bin:${containerEnv:PATH}"
     },
