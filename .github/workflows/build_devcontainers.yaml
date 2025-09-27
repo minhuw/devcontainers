@@ -12,19 +12,58 @@ env:
     REGISTRY: ghcr.io
 
 jobs:
-    build-and-push-image:
+    detect-changes:
         runs-on: ubuntu-latest
+        outputs:
+            matrix: ${{ steps.changes.outputs.matrix }}
+        steps:
+          - name: Checkout repository
+            uses: actions/checkout@v3
+            with:
+                fetch-depth: 0
+
+          - name: Detect changed containers
+            id: changes
+            run: |
+                # Get list of changed files
+                if [ "${{ github.event_name }}" = "push" ]; then
+                    CHANGED_FILES=$(git diff --name-only ${{ github.event.before }} ${{ github.sha }})
+                else
+                    # For workflow_dispatch, build all containers
+                    CHANGED_FILES="containers/"
+                fi
+
+                # Extract container names from changed paths
+                CHANGED_CONTAINERS=$(echo "$CHANGED_FILES" | grep "^containers/" | cut -d'/' -f2 | sort -u)
+
+                # Build matrix JSON
+                MATRIX_JSON="["
+                FIRST=true
+                for container in $CHANGED_CONTAINERS; do
+                    if [ -d "containers/$container/.devcontainer" ]; then
+                        if [ "$FIRST" = "true" ]; then
+                            FIRST=false
+                        else
+                            MATRIX_JSON="$MATRIX_JSON,"
+                        fi
+                        MATRIX_JSON="$MATRIX_JSON{\"name\":\"$container\"}"
+                    fi
+                done
+                MATRIX_JSON="$MATRIX_JSON]"
+
+                echo "matrix=$MATRIX_JSON" >> $GITHUB_OUTPUT
+                echo "Changed containers: $CHANGED_CONTAINERS"
+                echo "Matrix: $MATRIX_JSON"
+
+    build-and-push-image:
+        needs: detect-changes
+        runs-on: ubuntu-latest
+        if: needs.detect-changes.outputs.matrix != '[]'
         strategy:
             fail-fast: false
             max-parallel: 1
             matrix:
-              include:
-                - name: base
-                - name: kernel
-                - name: python
-                - name: omnetpp
-                - name: ubuntu-kernel
-                - name: web
+              include: ${{ fromJson(needs.detect-changes.outputs.matrix) }}
 
         permissions:
             contents: read
