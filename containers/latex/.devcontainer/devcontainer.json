@@ -7,7 +7,6 @@
         "vscode": {
             "extensions": [
                 "James-Yu.latex-workshop",
-                "streetsidesoftware.code-spell-checker",
                 "valentjn.vscode-ltex",
                 "tecosaur.latex-utilities"
             ],
@@ -15,40 +14,15 @@
                 "latex-workshop.latex.autoBuild.run": "onSave",
                 "latex-workshop.latex.outDir": "./build",
                 "latex-workshop.view.pdf.viewer": "tab",
-                "latex-workshop.latex.clean.fileTypes": [
-                    "*.aux",
-                    "*.bbl",
-                    "*.blg",
-                    "*.idx",
-                    "*.ind",
-                    "*.lof",
-                    "*.lot",
-                    "*.out",
-                    "*.toc",
-                    "*.acn",
-                    "*.acr",
-                    "*.alg",
-                    "*.glg",
-                    "*.glo",
-                    "*.gls",
-                    "*.ist",
-                    "*.fls",
-                    "*.log",
-                    "*.fdb_latexmk",
-                    "*.synctex.gz"
-                ],
                 "latex-workshop.latex.recipe.default": "latexmk (xelatex)",
                 "latex-workshop.latex.tools": [
                     {
                         "name": "latexmk",
                         "command": "latexmk",
                         "args": [
-                            "-xelatex",
-                            "-synctex=1",
-                            "-interaction=nonstopmode",
+                            "-halt-on-error",
                             "-file-line-error",
-                            "-pdf",
-                            "-outdir=%OUTDIR%",
+                            "-outdir=./build",
                             "%DOC%"
                         ]
                     }
@@ -61,10 +35,6 @@
                 ],
                 "ltex.language": "en-US",
                 "ltex.additionalRules.languageModel": "/usr/share/hunspell",
-                "cSpell.language": "en",
-                "cSpell.enableFiletypes": [
-                    "latex"
-                ],
                 "files.associations": {
                     "*.tex": "latex",
                     "*.bib": "bibtex"
